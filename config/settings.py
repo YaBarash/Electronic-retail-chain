@@ -22,7 +22,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "retail_chain",
     "users",
+    "djmoney",
+    "phonenumber_field",
 ]
+
+REST_FRAMEWORK = {
+    "DATETIME_FORMAT": "%d/%m/%Y %H:%M:%S",
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -92,12 +98,14 @@ AUTH_USER_MODEL = "users.User"
 
 LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
 USE_TZ = True
 
 STATIC_URL = "static/"
+MEDIA_URL = "media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

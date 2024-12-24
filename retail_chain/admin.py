@@ -8,17 +8,18 @@ class ContactAdmin(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'product_date',)
+    list_display = ('id', 'product_name', 'product_date',)
 
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "get_type_display",
         "name",
         "supplier",
         "level",
         "date_created",
-        "debt",
     )
+    readonly_fields = ("debt",)
     inlines = [ContactAdmin]

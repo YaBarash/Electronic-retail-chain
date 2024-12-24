@@ -6,7 +6,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-import retail_chain
+
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -27,7 +28,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('retail_chain', include(retail_chain.urls), namespace='retail_chain'),
+    path("", include("retail_chain.urls", namespace="retail_chain")),
     path("users/", include("users.urls", namespace="users")),
 
     path(

@@ -99,7 +99,7 @@ class Company(models.Model):
 
 class Contacts(models.Model):
     company = models.ForeignKey(
-        Company, verbose_name="Компания", help_text="Укажите компанию"
+        Company, on_delete=models.CASCADE, verbose_name="Компания", help_text="Укажите компанию", related_name='company_contacts'
     )
     email = models.EmailField(
         verbose_name="Е-майл организации",

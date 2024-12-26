@@ -19,14 +19,12 @@ class CompanyAllFieldsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Company
-        exclude = ('debt', 'debt_currency')
+        exclude = ("debt", "debt_currency")
 
 
 class CompanySerializer(serializers.ModelSerializer):
     company_products = ProductSerializer(many=True, read_only=True)
 
-    # contacts = ContactsSerializer(many=True, read_only=True)
-
     class Meta:
         model = Company
-        fields = '__all__'
+        fields = "__all__"

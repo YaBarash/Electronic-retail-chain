@@ -33,4 +33,4 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
 class UserListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = (IsUserModerator | IsAdminUser)
+    permission_classes = IsUserModerator | IsAdminUser

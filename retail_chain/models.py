@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from django.db import models
 from djmoney.models.fields import MoneyField
 
@@ -99,7 +97,11 @@ class Company(models.Model):
 
 class Contacts(models.Model):
     company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, verbose_name="Компания", help_text="Укажите компанию", related_name='company_contacts'
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Компания",
+        help_text="Укажите компанию",
+        related_name="company_contacts",
     )
     email = models.EmailField(
         verbose_name="Е-майл организации",

@@ -1,19 +1,39 @@
 from django.contrib import admin
 from django.urls import reverse
-from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from requests import Response
 
 from retail_chain.models import Company, Product, Contacts
 
 
 class ContactAdmin(admin.StackedInline):
     model = Contacts
+    extra = 1
+
+
+@admin.register(Contacts)
+class ContactsConcreteAdmin(admin.ModelAdmin):
+    list_display = (
+        "email",
+        "inn",
+        "country",
+        "city",
+        "street",
+        "number_house",
+    )
+    list_filter = ("country", "city")
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product_name', 'product_date',)
+    list_display = (
+        "id",
+        "product_name",
+        "product_date",
+    )
+    list_filter = (
+        "product_name",
+        "product_model",
+    )
 
 
 @admin.register(Company)
@@ -27,29 +47,21 @@ class CompanyAdmin(admin.ModelAdmin):
         "date_created",
     )
 
-    fields = (
-        "name",
-        "supplier",
-        "level",
-        "debt"
-    )
-
     inlines = [ContactAdmin]
 
-    @admin.display(description=('Link for supplier'))
+    @admin.display(description=("Поставщик"))
     def supplier_link(self, obj):
         if obj.supplier:
-            url = reverse(f'admin:{obj.supplier._meta.app_label}_{obj.supplier._meta.model_name}_change',
-                          args=(obj.supplier.pk,))
+            url = reverse(
+                f"admin:{obj.supplier._meta.app_label}_{obj.supplier._meta.model_name}_change",
+                args=(obj.supplier.pk,),
+            )
             return mark_safe(f'<a href="{url}" target="_blank">{obj.supplier}</a>')
-        return '-'
-    supplier_link.allow_tags = True
-    supplier_link.short_description = "Поставщик"
+        return "-"
 
-    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
-    #     if db_field.name == 'city':
-    #         kwargs['queryset'] = Contacts.objects.filter(applicable=False)
+    @admin.action(description="Обнулить задолженость компании")
+    def make_debt_to_zero(self, request, queryset):
+        print(request)
+        queryset.update(debt=0)
 
-    # @admin.action
-    # def make_published(CompanyAdmin, request, queryset):
-    #     queryset.update(debt=0)
+    actions = [make_debt_to_zero]

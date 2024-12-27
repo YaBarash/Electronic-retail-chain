@@ -9,7 +9,8 @@ from retail_chain.permissions import IsUserModerator, IsUserOwner
 from retail_chain.serializers import (
     CompanySerializer,
     CompanyAllFieldsSerializer,
-    ProductSerializer, ContactsSerializer,
+    ProductSerializer,
+    ContactsSerializer,
 )
 
 
@@ -36,8 +37,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
         """Метод , запрещяющий добавлять через АПИ задолженость"""
         serializer = self.get_serializer(data=request.data)
         if (
-                request.data.get("debt") is None
-                and request.data.get("debt_currency") is None
+            request.data.get("debt") is None
+            and request.data.get("debt_currency") is None
         ):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
@@ -81,9 +82,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if (
-                request.data.get("product_name") is None
-                or request.data.get("product_model")
-                or request.data.get("product_name").isdigit()
+            request.data.get("product_name") is None
+            or request.data.get("product_model")
+            or request.data.get("product_name").isdigit()
         ):
             data = {"error": f"Ошибка с кодом 400. Укажите название продукта"}
             return JsonResponse(
@@ -108,4 +109,3 @@ class ContactsViewSet(viewsets.ModelViewSet):
         if self.action:
             self.permission_classes = (IsUserModerator | IsUserOwner | IsAdminUser,)
         return super().get_permissions()
-

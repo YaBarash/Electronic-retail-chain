@@ -1,15 +1,15 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, filters, status
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 
-from retail_chain.models import Company, Product
+from retail_chain.models import Company, Product, Contacts
 from retail_chain.paginators import Pagination
 from retail_chain.permissions import IsUserModerator, IsUserOwner
 from retail_chain.serializers import (
     CompanySerializer,
     CompanyAllFieldsSerializer,
-    ProductSerializer,
+    ProductSerializer, ContactsSerializer,
 )
 
 
@@ -36,8 +36,8 @@ class CompanyViewSet(viewsets.ModelViewSet):
         """Метод , запрещяющий добавлять через АПИ задолженость"""
         serializer = self.get_serializer(data=request.data)
         if (
-            request.data.get("debt") is None
-            and request.data.get("debt_currency") is None
+                request.data.get("debt") is None
+                and request.data.get("debt_currency") is None
         ):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
@@ -81,9 +81,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if (
-            request.data.get("product_name") is None
-            or request.data.get("product_model")
-            or request.data.get("product_name").isdigit()
+                request.data.get("product_name") is None
+                or request.data.get("product_model")
+                or request.data.get("product_name").isdigit()
         ):
             data = {"error": f"Ошибка с кодом 400. Укажите название продукта"}
             return JsonResponse(
@@ -95,3 +95,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ContactsViewSet(viewsets.ModelViewSet):
+    queryset = Contacts.objects.all()
+    serializer_class = ContactsSerializer
+    pagination_class = Pagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["country"]
+
+    def get_permissions(self):
+        if self.action:
+            self.permission_classes = (IsUserModerator | IsUserOwner | IsAdminUser,)
+        return super().get_permissions()
+

@@ -20,17 +20,17 @@ class CompanyViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ["type", "name", "supplier", "level", "date_created"]
 
-    # def get_permissions(self):
-    #     if not self.request.user.is_staff and self.request.user.is_active:
-    #         if self.action in ["update", "retrieve", "create", "destroy"]:
-    #             self.permission_classes = (IsUserModerator | IsUserOwner,)
-    #         elif self.action == "list":
-    #             self.permission_classes = (IsAuthenticatedOrReadOnly,)
-    #     return super().get_permissions()
-    #     serializer_class = CompanySerializer
-    #     if self.action:
-    #         self.permission_classes = (IsAdminUser,)
-    #     return super().get_permissions()
+    def get_permissions(self):
+        if not self.request.user.is_staff and self.request.user.is_active:
+            if self.action in ["update", "retrieve", "create", "destroy"]:
+                self.permission_classes = (IsUserModerator | IsUserOwner,)
+            elif self.action == "list":
+                self.permission_classes = (IsAuthenticatedOrReadOnly,)
+        return super().get_permissions()
+        serializer_class = CompanySerializer
+        if self.action:
+            self.permission_classes = (IsAdminUser,)
+        return super().get_permissions()
 
     def create(self, request, *args, **kwargs):
         """Метод , запрещяющий добавлять через АПИ задолженость"""

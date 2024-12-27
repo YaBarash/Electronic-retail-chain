@@ -73,10 +73,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     search_fields = ["product_name", "product_model", "product_date"]
 
     def get_permissions(self):
-        if self.action in ["update", "retrieve", "create", "destroy"]:
-            self.permission_classes = (IsUserModerator | IsUserOwner | IsAdminUser,)
-        elif self.action == "list":
-            self.permission_classes = (IsAuthenticatedOrReadOnly,)
+        if self.request.user.is_active:
+            if self.action in ["update", "retrieve", "create", "destroy"]:
+                self.permission_classes = (IsUserModerator | IsUserOwner | IsAdminUser,)
+            elif self.action == "list":
+                self.permission_classes = (IsAuthenticatedOrReadOnly,)
         return super().get_permissions()
 
     def create(self, request, *args, **kwargs):
@@ -106,6 +107,7 @@ class ContactsViewSet(viewsets.ModelViewSet):
     search_fields = ["country"]
 
     def get_permissions(self):
-        if self.action:
-            self.permission_classes = (IsUserModerator | IsUserOwner | IsAdminUser,)
+        if self.request.user.is_active:
+            if self.action:
+                self.permission_classes = (IsUserModerator | IsUserOwner | IsAdminUser,)
         return super().get_permissions()

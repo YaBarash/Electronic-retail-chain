@@ -14,7 +14,6 @@ class Product(models.Model):
         max_length=150,
         verbose_name="Модель продукта",
         help_text="Укажите модель продукта",
-        **NULLABLE,
     )
     product_date = models.DateField(
         default=None,
@@ -85,6 +84,7 @@ class Company(models.Model):
     products = models.ManyToManyField(
         Product,
         verbose_name="Продукты",
+        help_text="Укажите продукты, которые предоставляет компания",
     )
 
     class Meta:
